@@ -5,7 +5,7 @@ import './utils/ERC20.sol';
 import './utils/Ownable.sol';
 import './utils/MinterOwnable.sol';
 
-contract Soldier is ERC20, Ownable, MinterOwnable {
+contract Sparta is ERC20, Ownable, MinterOwnable {
     mapping(address => bool) public _isBlacklisted;
 
     constructor(

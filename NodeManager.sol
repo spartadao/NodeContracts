@@ -6,11 +6,11 @@ import './utils/HelperOwnable.sol';
 import './utils/WeigthOwnable.sol';
 import './interface/IERC721Metadata.sol';
 import './interface/IERC721Receiver.sol';
-import './interface/IArmyManager.sol';
+import './interface/IManager.sol';
 import './library/Address.sol';
 
 
-contract ArmyManager is Ownable, HelperOwnable, WeigthOwnable, IERC721, IERC721Metadata, IArmyManager {
+contract Manager is Ownable, HelperOwnable, WeigthOwnable, IERC721, IERC721Metadata, IManager {
     using Address for address;
 
     struct Army {
@@ -407,7 +407,7 @@ contract ArmyManager is Ownable, HelperOwnable, WeigthOwnable, IERC721, IERC721M
     }
 
     function _burn(uint256 tokenId) internal virtual {
-        address owner = ArmyManager.ownerOf(tokenId);
+        address owner = ownerOf(tokenId);
         _approve(address(0), tokenId);
         _balances[owner] -= 1;
         delete _owners[uint64(tokenId)];

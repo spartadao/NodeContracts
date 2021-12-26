@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import './interface/IArmyManager.sol';
+import './interface/IManager.sol';
 import './interface/IERC20.sol';
 import './utils/Ownable.sol';
 
@@ -9,8 +9,8 @@ interface IPool {
     function pay(address _to, uint _amount) external returns (bool);
 }
 
-contract ArmyHelper is Ownable {
-    IArmyManager public manager;
+contract Helper is Ownable {
+    IManager public manager;
     IERC20 public token;
 
     address public team;
@@ -20,7 +20,7 @@ contract ArmyHelper is Ownable {
     uint public poolFee;
 
     constructor(address _manager, address _token, address _pool, address teamAdrs, uint _teamFee, uint _poolFee) {
-        manager = IArmyManager(_manager);
+        manager = IManager(_manager);
         token = IERC20(_token);
         pool = IPool(_pool);
         team = teamAdrs;
