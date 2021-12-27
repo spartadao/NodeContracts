@@ -8,6 +8,10 @@ interface IAlphaSparta {
     function mint(address account_, uint256 amount_) external;
 }
 
+interface ISparta {
+    function mint(address account_, uint256 amount_) external;
+}
+
 interface IUniswapV2Router01 {
   function addLiquidity(
       address tokenA,
@@ -153,7 +157,8 @@ contract USDCSpartaPresale is Ownable {
     function claimUnlock() external onlyOwner {
         require(ended, "Sale has not ended");
         require(!claimable, "Claim has already been unlocked");
-        require(SPARTA.balanceOf(address(this)) >= totalDebt, 'not enough SPARTA in contract');
+        // require(SPARTA.balanceOf(address(this)) >= totalDebt, 'not enough SPARTA in contract');
+        
         claimable = true;
         emit ClaimUnlocked(block.number);
     }
@@ -211,7 +216,9 @@ contract USDCSpartaPresale is Ownable {
 
         aSPARTA.safeTransferFrom( msg.sender, address(this), _amount );
 
-        SPARTA.safeTransfer( msg.sender, _amount );
+        ISparta(address(SPARTA)).mint(msg.sender, _amount);
+
+        // SPARTA.safeTransfer( msg.sender, _amount );
 
         emit Withdraw(address(SPARTA), msg.sender, _amount);
     }
@@ -229,6 +236,7 @@ contract USDCSpartaPresale is Ownable {
 
     function addLiquidityAfterPresale(uint256 spartaTokenAmount) onlyOwner external {
         uint balanceUSDC = USDC.balanceOf(address(this));
+        ISparta(address(SPARTA)).mint(address(this), spartaTokenAmount);
         SPARTA.approve(address(router), spartaTokenAmount);
         USDC.approve(address(router), balanceUSDC);
         router.addLiquidity(address(SPARTA), address(USDC), spartaTokenAmount, balanceUSDC, 1, 1, address(router), block.number + 1);
