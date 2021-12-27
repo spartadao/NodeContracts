@@ -14,23 +14,25 @@ contract Helper is Ownable {
     IERC20 public token;
 
     address public team;
+    address public dao;
     IPool public pool;
 
     uint public teamFee;
-    uint public poolFee;
+    uint public daoFee;
 
-    constructor(address _manager, address _token, address _pool, address teamAdrs, uint _teamFee, uint _poolFee) {
+    constructor(address _manager, address _token, address _pool, address _dao, address teamAdrs, uint _teamFee, uint _daoFee) {
         manager = IManager(_manager);
         token = IERC20(_token);
         pool = IPool(_pool);
+        dao = _dao;
         team = teamAdrs;
         teamFee = _teamFee;
-        poolFee = _poolFee;
+        daoFee = _daoFee;
     }
 
     function setDefaultFees(uint256[] memory fees) public onlyOwner {
         teamFee = fees[0];
-        poolFee = fees[1];
+        daoFee = fees[1];
     }
 
     function updateTeamAddress(address payable _team) external onlyOwner {
@@ -43,7 +45,7 @@ contract Helper is Ownable {
     }
 
     function updateLiquiditFee(uint256 _fee) external onlyOwner {
-        poolFee = _fee;
+        daoFee = _fee;
     }
 
     function updateTeamFee(uint256 _fee) external onlyOwner {
@@ -54,8 +56,8 @@ contract Helper is Ownable {
         uint256 teamTokens = (contractTokenBalance * teamFee) / 100;
         token.transfer(team, teamTokens);
 
-        uint256 poolTokens = (contractTokenBalance * poolFee) / 100;
-        token.transfer(address(pool), poolTokens);
+        uint256 daoTokens = (contractTokenBalance * daoFee) / 100;
+        token.transfer(dao, daoTokens);
     }
 
     function createNodeWithTokens(string memory name) public {
@@ -115,12 +117,12 @@ contract Helper is Ownable {
         return pool.pay(sender, rewardAmount);
     }
 
-    function claim(uint256 _node) public {
+    function claim(uint256 _node) public returns (bool) {
         address sender = _msgSender();
         require(sender != address(0), "HELPER: creation from the zero address");
         require(sender != team, "HELPER: team cannot cashout rewards");
         uint256 rewardAmount = manager.claim(_msgSender(), _node);
         require(rewardAmount > 0,"HELPER: You don't have enough reward to cash out");
-        pool.pay(sender, rewardAmount);
+        return pool.pay(sender, rewardAmount);
     }
 }
