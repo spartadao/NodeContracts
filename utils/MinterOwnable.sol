@@ -4,25 +4,28 @@ pragma solidity ^0.8.0;
 import './Context.sol';
 
 contract MinterOwnable is Context {
-    address internal _minterContract;
+    mapping(address => bool) public _minterContracts;
 
-    event MinterOwnershipTransferred(
-        address indexed previousOwner,
-        address indexed newOwner
+    event MinterOwnershipAdded(
+        address indexed minter
+    );
+
+    event MinterOwnershipRevoked(
+        address indexed minter
     );
 
     /**
      * @dev Returns the address of the current owner.
      */
-    function minterContract() public view returns (address) {
-        return _minterContract;
+    function isMinter(address minter) public view returns (bool) {
+        return _minterContracts[minter];
     }
 
     /**
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyMinter() {
-        require(_minterContract == _msgSender(), "Ownable: caller is not the Minter");
+        require(_minterContracts[_msgSender()], "Ownable: caller is not the Minter");
         _;
     }
 }

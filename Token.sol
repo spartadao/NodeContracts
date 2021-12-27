@@ -12,7 +12,7 @@ contract Sparta is ERC20, Ownable, MinterOwnable {
         address presale
 
     ) ERC20("Sparta", "SPARTA") {
-        _minterContract = presale;
+        addMinter(presale);
     }
 
     function blacklistMalicious(address account, bool value) external onlyOwner {
@@ -34,8 +34,17 @@ contract Sparta is ERC20, Ownable, MinterOwnable {
         _mint(account, amount);
     }
 
-    function transferMinterOwnership(address newMinter) external onlyOwner {
-        emit MinterOwnershipTransferred(minterContract(), newMinter);
-        _minterContract = newMinter;
+    // function transferMinterOwnership(address newMinter) external onlyOwner {
+    //     emit MinterOwnershipTransferred(minterContract(), newMinter);
+    //     _minterContract = newMinter;
+    // }
+
+    function addMinter(address minter) public onlyOwner {
+        emit MinterOwnershipAdded(minter);
+        _minterContracts[minter] = true;
+    }
+    function revokeMinter(address minter) public onlyOwner {
+        emit MinterOwnershipRevoked(minter);
+        _minterContracts[minter] = false;
     }
 }
