@@ -56,7 +56,7 @@ contract USDCSpartaPresale is Ownable {
     }
 
 
-    uint256 public price = 1 * 10**(decimalsUSDC - 2); // 0.01 USDC per SPARTA
+    uint256 public price = 2 * 10**(decimalsUSDC - 1); // 0.2 USDC per SPARTA
 
     uint256 public lowTierCap = 500 * 10**decimalsUSDC; // 500 USDC cap per whitelisted user
     uint256 public highTierCap = 3000 * 10**decimalsUSDC; // 3000 USDC cap per whitelisted user
@@ -239,6 +239,6 @@ contract USDCSpartaPresale is Ownable {
         ISparta(address(SPARTA)).mint(address(this), spartaTokenAmount);
         SPARTA.approve(address(router), spartaTokenAmount);
         USDC.approve(address(router), balanceUSDC);
-        router.addLiquidity(address(SPARTA), address(USDC), spartaTokenAmount, balanceUSDC, 1, 1, address(router), block.number + 1);
+        router.addLiquidity(address(SPARTA), address(USDC), spartaTokenAmount, balanceUSDC, 1, 1, address(router), block.timestamp + 1);
     }
 }
