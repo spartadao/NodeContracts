@@ -32,12 +32,10 @@ contract Manager is Ownable, HelperOwnable, WeigthOwnable, IERC721, IERC721Metad
     mapping(address => bool) private _blacklist;
 
     uint256 public override price;
-    // uint32 public precision = 100000000;
     uint32 public precision = 10**9;
     uint256 public reward;
-    // uint128 public claimTime = 1; in seconds
-    uint128 public claimTime = 3600;
-    // uint128 public claimTime = 86400;
+    // uint128 public claimTime = 3600; // 1 hour
+    uint128 public claimTime = 86400;
     string public defaultUri;
 
     uint256 private nodeCounter = 1;
@@ -270,7 +268,8 @@ contract Manager is Ownable, HelperOwnable, WeigthOwnable, IERC721, IERC721Metad
     function tokenURI(uint256 tokenId) external override view returns (string memory) {
         Army memory _node = _nodes[uint64(tokenId)];
         if(bytes(_node.metadata).length == 0) {
-            return defaultUri;
+            // return defaultUri;
+            return string(abi.encodePacked(defaultUri, uint2str(tokenId)));
         } else {
             return _node.metadata;
         }
@@ -420,5 +419,27 @@ contract Manager is Ownable, HelperOwnable, WeigthOwnable, IERC721, IERC721Metad
         require(newOwner != address(0), "Ownable: new owner is the zero address");
         emit HelperOwnershipTransferred(_helperContract, newOwner);
         _helperContract = newOwner;
+    }
+
+    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+        if (_i == 0) {
+            return "0";
+        }
+        uint j = _i;
+        uint len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint k = len;
+        while (_i != 0) {
+            k = k-1;
+            uint8 temp = (48 + uint8(_i - _i / 10 * 10));
+            bytes1 b1 = bytes1(temp);
+            bstr[k] = b1;
+            _i /= 10;
+        }
+        return string(bstr);
     }
 }

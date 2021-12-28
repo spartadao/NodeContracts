@@ -8,12 +8,7 @@ import './utils/MinterOwnable.sol';
 contract Sparta is ERC20, Ownable, MinterOwnable {
     mapping(address => bool) public _isBlacklisted;
 
-    constructor(
-        address presale
-
-    ) ERC20("Sparta", "SPARTA") {
-        addMinter(presale);
-    }
+    constructor() ERC20("Sparta", "SPARTA") {}
 
     function blacklistMalicious(address account, bool value) external onlyOwner {
         _isBlacklisted[account] = value;
