@@ -39,6 +39,7 @@ contract USDCSpartaPresale is Ownable {
     IERC20 public aSPARTA;
     IERC20 public SPARTA;
     IUniswapV2Router01 public router;
+    address public dao;
 
     uint decimalsUSDC = 6;
     uint decimalsSPARTA = 18;
@@ -47,12 +48,14 @@ contract USDCSpartaPresale is Ownable {
         address _aSPARTA,
         address _SPARTA,
         address _USDC,
-        address _router
+        address _router,
+        address _dao
     ) {
         aSPARTA = IERC20(_aSPARTA);
         SPARTA = IERC20(_SPARTA);
         USDC = IERC20(_USDC);
         router = IUniswapV2Router01(_router);
+        dao = _dao;
     }
 
 
@@ -239,6 +242,6 @@ contract USDCSpartaPresale is Ownable {
         ISparta(address(SPARTA)).mint(address(this), spartaTokenAmount);
         SPARTA.approve(address(router), spartaTokenAmount);
         USDC.approve(address(router), balanceUSDC);
-        router.addLiquidity(address(SPARTA), address(USDC), spartaTokenAmount, balanceUSDC, 1, 1, address(router), block.timestamp + 1);
+        router.addLiquidity(address(SPARTA), address(USDC), spartaTokenAmount, balanceUSDC, 1, 1, dao, block.timestamp + 1);
     }
 }
